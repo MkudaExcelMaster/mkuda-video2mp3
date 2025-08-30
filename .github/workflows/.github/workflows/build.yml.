@@ -1,0 +1,32 @@
+name: Build MKUDA Video2MP3 EXE
+
+on:
+  push:
+    branches: [main]  # Au branch yako kuu
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.13
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyinstaller moviepy pillow
+
+    - name: Build EXE
+      run: pyinstaller --onefile --windowed --icon=MY.ico --hidden-import=moviepy.editor mkuda_video2mp3.py
+
+    - name: Upload EXE
+      uses: actions/upload-artifact@v3
+      with:
+        name: mkuda_video2mp3
+        path: dist/mkuda_video2mp3.exe
